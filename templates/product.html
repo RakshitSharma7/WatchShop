@@ -1,0 +1,33 @@
+{% extends 'main.html' %}
+
+{%block body_block %}
+{% load static %}
+<div class="card mb-3" style="max-width: 540px;">
+    <div class="row g-0">
+      <div class="col-md-4">
+        <img src="{{product.image.url}}" class="img-fluid rounded-start" alt="...">
+      </div>
+      <div class="col-md-8">
+        <div class="card-body">
+          <h5 class="card-title">{{product.name}}</h5>
+          <p class="card-text">{{product.description}}</p>
+          <h6 class="card-title">{{product.price}}</h6>
+          <a  class="fa-solid fa-heart ico" href="{% url 'wishlist' id=product.id %}"></a>
+          <a class="fa-solid fa-cart-plus ico" href="{% url 'cart' id=product.id %}"></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    {% for ireview in reviews %}
+    <div class="card text-dark bg-light mb-3" style="max-width: 18rem;">
+      <div class="card-header">{{ireview.user}}</div>
+      <div class="card-body">
+        <h5 class="card-title">{{ireview.rating}}</h5>
+        <p class="card-text">{{ireview.review}}</p>
+      </div>
+    </div>
+    {% endfor %}
+
+{%endblock %}

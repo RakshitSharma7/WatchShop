@@ -1,0 +1,18 @@
+{% extends 'main.html' %}
+
+
+{%block body_block %}
+<div class="wrapper">
+    <form method="post" enctype="multipart/form-data" class="forms">
+        {% csrf_token %}
+        <div class="form-grp">{{form.username.label_tag}}{{form.username}}</div>
+        <div class="form-grp">{{form.password1.label_tag}}{{form.password1}}</div>
+        <div class="form-grp">{{form.password2.label_tag}}{{form.password2}}</div>
+        <a type="submit" class="btn btn-forms btn-info" >SignUp</a>
+    </form>
+</div>
+
+
+
+
+{%endblock %}
