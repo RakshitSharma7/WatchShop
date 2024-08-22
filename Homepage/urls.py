@@ -1,7 +1,7 @@
 
 from django.urls import path
 from . import views
-from .views import uploadPage,contactus
+from .views import uploadPage,contactus,SearchView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -20,7 +20,8 @@ urlpatterns = [
     path('cart/',views.show_cart,name='show_cart'),
     path('removewish/<int:id>',views.remove_wish,name='removewish'),
     path('removecart/<int:id>',views.removecart,name='removecart'),
-    path('contact/',contactus.as_view(),name='contact')
+    path('contact/',contactus.as_view(),name='contact'),
+    path('search/',SearchView.as_view(),name='search')
 ]
 
 

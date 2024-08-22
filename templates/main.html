@@ -326,14 +326,15 @@
             <a class="nav-link {%block statusw %}{%endblock%}" aria-current="page" href="{% url 'show_wishlist' %}">WishList</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {%block statusc %}{%endblock%}"aria-current="page"  href="{% url 'show_cart' %}">Cart</a>
+            <a class="nav-link {%block statusc %}{%endblock%}"aria-current="page"   href="{% url 'show_cart' %}">Cart</a>
           </li>
           <!-- <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
           </li> -->
         </ul>
-        <form class="d-flex" style="margin-right: 15px;">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <form class="d-flex" style="margin-right: 15px;"  method="get" action="{% url 'search' %}">
+          {% csrf_token %}
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
         <div class="btn-group dropstart" >

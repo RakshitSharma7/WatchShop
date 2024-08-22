@@ -164,3 +164,15 @@ class contactus(View):
             form.save()
             return redirect('home')
         return render(request, "contact.html", {'form': form})
+    
+class SearchView(View):
+    model = watchupload
+    template_name = 'search.html'
+    
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get('q')
+        if query:
+            results = watchupload.objects.filter(name__icontains=query).order_by('-updated')
+        else:
+            results = watchupload.objects.none()
+        return render(request, self.template_name, {'get': results})
