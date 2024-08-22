@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews
+from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews,cartItems
 # Register your models here.
 
 
@@ -24,7 +24,8 @@ class wishlistadmin(admin.ModelAdmin):
 
 
 admin.site.register(wishlist,wishlistadmin)
-admin.site.register(Cart,wishlistadmin)
+admin.site.register(Cart)
+admin.site.register(cartItems)
 
 
 class reviewadmin(admin.ModelAdmin):

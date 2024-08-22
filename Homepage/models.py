@@ -16,6 +16,7 @@ class watchupload(models.Model):
     name=models.CharField(max_length=100)
     description = models.TextField()
     price= models.FloatField()
+
     image = models.ImageField(upload_to='watch_images/')
     created=models.DateTimeField(auto_now_add=True),
     updated=models.DateTimeField(auto_now=True)
@@ -29,10 +30,13 @@ class wishlist(models.Model):
 
 class Cart(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
-    products=models.ManyToManyField(watchupload)
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
 
+class cartItems(models.Model):
+    user=models.ForeignKey(Cart, on_delete=models.CASCADE, null=True , blank=True)
+    product=models.ForeignKey(watchupload, on_delete=models.CASCADE)
+    cart_count=models.IntegerField(default=1)
 
 
 class Watchreviews(models.Model):

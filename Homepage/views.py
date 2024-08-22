@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
-from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews
+from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews,cartItems
 from  . forms import uploadforms
 from django.contrib.auth.decorators import login_required
 
@@ -14,17 +14,39 @@ def Home(request):
     context={"watches_t":watches}
     return render(request, 'home.html', context)
 
-@login_required(login_url='login')
-def upload(request):
-    if request.method == "POST":
+# @login_required(login_url='login')
+# def upload(request):
+#     if request.method == "POST":
+#         form = uploadforms(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#     else:
+#         form = uploadforms()
+
+#     return render(request, "upload.html", {'form': form})
+
+
+
+#class-based view
+from django.views import View
+from django.utils.decorators import method_decorator
+
+class uploadPage(View):
+
+    @method_decorator(login_required(login_url='login'))
+    def get(self,request):
+        form = uploadforms()
+        return render(request, "upload.html", {'form': form})
+    @method_decorator(login_required(login_url='login'))
+    def post(self,request):
         form = uploadforms(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             return redirect('home')
-    else:
-        form = uploadforms()
+        return render(request, "upload.html", {'form': form})
 
-    return render(request, "upload.html", {'form': form})
+
 
 
 
@@ -76,44 +98,52 @@ def show_product(request,id):
 
 
 def addtowish(request,id):
-    user = request.user
-    product = watchupload.objects.get(id=id)
-    obj,created=wishlist.objects.get_or_create(user=user)
-    obj.products.add(product)
-    obj.save()
-    return redirect('home')
+    if request.user.is_authenticated:
+        user_id = request.user.id
+        user = request.user
+        product = watchupload.objects.get(id=id)
+        obj,created=wishlist.objects.get_or_create(user=user)
+        obj.products.add(product)
+        obj.save()
+        return redirect('home')
+    else:
+        return redirect('login')
 
 def addtocart(request,id):
-    user=request.user
-    product=watchupload.objects.get(id=id)
-    obj,created=Cart.objects.get_or_create(user=user)
-    obj.save()
-    obj.products.add(product)
-    obj.save()
+    #check if user has cart or not
+    user_cart, created = Cart.objects.get_or_create(user=request.user)
+    
+    #fetch the product with given id
+    product= watchupload.objects.get(id=id)
+
+    #create a cart item using product abd user
+    cart_item, created = cartItems.objects.get_or_create(user= user_cart, product=product)
+    cart_item.product=product
+    cart_item.save()
     return redirect('home')
 
 @login_required(login_url='login')
 def show_wishlist(request):
     user=request.user
     wishlist_obj=wishlist.objects.get(user=user)
-    return render(request, 'cart.html',{'product':wishlist_obj.products.all(),'iscart':False})
+    return render(request, 'wishlist.html',{'product':wishlist_obj.products.all(),'iscart':False})
 
 @login_required(login_url='login')
 def show_cart(request):
-    user=request.user
-    cart_obj=Cart.objects.get(user=user)
-    return render(request,'cart.html',{'product':cart_obj.products.all(),'iscart':True})
+    user_cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_objects = user_cart.cartitems_set.all()
+    return render(request, 'cart.html', {'product': cart_objects})
 
 def remove_wish(request,id):
     product=watchupload.objects.get(id=id)
     wishlist_obj=wishlist.objects.get(user=request.user)
     wishlist_obj.products.remove(product)
-    return render(request, 'cart.html',{'product':wishlist_obj.products.all(),'iscart':False})
+    return render(request, 'wishlist.html',{'product':wishlist_obj.products.all(),'iscart':False})
 
 
 def removecart(request,id):
-    product=watchupload.objects.get(id=id)
-    cart_obj=Cart.objects.get(user=request.user)
-    cart_obj.products.remove(product)
-    return render(request,'cart.html',{'product':cart_obj.products.all(),'iscart':True})
+    products=watchupload.objects.get(id=id)
+    cart_obj=cartItems.objects.get(user=request.user)
+    cart_obj.product.remove(products)
+    return render(request,'cart.html',{'product':cart_obj.product.all(),'iscart':True})
 
