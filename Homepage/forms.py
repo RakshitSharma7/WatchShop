@@ -1,4 +1,4 @@
-from . models import watchupload
+from . models import watchupload,contact
 from django import forms
 
 
@@ -28,3 +28,21 @@ class uploadforms(forms.ModelForm):
     class Meta:
         model = watchupload
         fields=['name','description','price','image']
+
+
+class contactform(forms.ModelForm):
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={'class':'form-control'}),
+        required=True
+    )
+    email = forms.CharField(
+        widget=forms.TextInput(attrs={'class':'form-control'}),
+        required=True
+    )
+    message=forms.CharField(
+        widget=forms.Textarea(attrs={'class':'form-control'})
+    )
+
+    class Meta:
+        model =contact
+        fields=['name','email','message']

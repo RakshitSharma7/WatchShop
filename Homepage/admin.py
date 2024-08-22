@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews,cartItems
+from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews,cartItems,contact
 # Register your models here.
 
 
@@ -34,3 +34,4 @@ class reviewadmin(admin.ModelAdmin):
     search_fields=['user','products']
 
 admin.site.register(Watchreviews,reviewadmin)
+admin.site.register(contact)

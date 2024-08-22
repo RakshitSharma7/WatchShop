@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.http import HttpResponse
 from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews,cartItems
-from  . forms import uploadforms
+from  . forms import uploadforms,contactform
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.
@@ -147,3 +147,20 @@ def removecart(request,id):
     cart_obj.product.remove(products)
     return render(request,'cart.html',{'product':cart_obj.product.all(),'iscart':True})
 
+def contact(request):
+    return render(request,'contact.html')
+
+
+class contactus(View):
+
+    @method_decorator(login_required(login_url='login'))
+    def get(self,request):
+        form = contactform()
+        return render(request, "contact.html", {'form': form})
+    @method_decorator(login_required(login_url='login'))
+    def post(self,request):
+        form = contactform(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        return render(request, "contact.html", {'form': form})
