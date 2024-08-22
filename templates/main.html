@@ -302,6 +302,7 @@
 }
 
 
+
   </style>
 </head>
 
@@ -335,12 +336,35 @@
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
           <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
+        <div class="dropdown" style="margin-left: 5px;">
+          <button class="btn dropdown-toggle homebtn bg-dark" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-person-circle"></i>
+          </button>
+          <ul class="dropdown-menu">
+            {% if user.is_authenticated %}
+            <li><a class="dropdown-item" href="#"><i class="bi bi-person-circle"></i>  {{user.username}}</a></li>
+            {%else%}
+            <li><a class="dropdown-item " href="{% url 'login' %}"><i class="bi bi-person-circle"></i> Guest</a></li>
+            {% endif %}
+            
+            <li><a class="dropdown-item" href="{% url 'about' %}">About Us</a></li>
+
+            {% if user.is_authenticated %}
+            <li><li><a class="dropdown-item" href="{% url 'logout' %}">LogOut</a></li></li>
+            {%else%}
+            <li><a class="dropdown-item" href="{% url 'login' %}">LogIn</a></li>
+            {% endif %}
+
+          </ul>
+        </div>
+
+<!-- 
         {% if user.is_authenticated %}
         <h6 style="padding: 5px; color: #fff; margin-top: 8px; margin-left: 5px;">{{user.username}}</h6>
         <a class="nav-link " href="{% url 'logout' %}">LogOut</a>
         {%else%}
         <a class="nav-link " href="{% url 'login' %}">LogIn</a>
-        {% endif %}
+        {% endif %} -->
 
 
 
@@ -387,7 +411,7 @@
         </div>
         <div class="col-md-4 footer-col">
           <div class="footer_detail">
-            <a href="" class="footer-logo">
+            <a href="" class="footer-logo" style="text-decoration: none;">
               WatchWorx
             </a>
             <p>
