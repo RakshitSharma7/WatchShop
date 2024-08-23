@@ -143,9 +143,11 @@ def remove_wish(request,id):
 
 def removecart(request,id):
     products=watchupload.objects.get(id=id)
-    cart_obj=cartItems.objects.get(user=request.user)
+    cart_obj=Cart.objects.get(user=request.user)
     cart_obj.product.remove(products)
     return render(request,'cart.html',{'product':cart_obj.product.all(),'iscart':True})
+
+
 
 def contact(request):
     return render(request,'contact.html')
