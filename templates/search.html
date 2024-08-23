@@ -28,10 +28,12 @@
             display: flex;
             flex-direction: row;
             background-color: #fff;
-            border: 1px solid #ddd;
+            border: 2px solid;
             border-radius: 5px;
             margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-color: black;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
         } */
 
         
@@ -47,14 +49,15 @@
     .wcard{
       display: grid;
       grid-template-columns: 50% 50%;
-      margin-left: 70px;
+      margin-left: 1px;
     }
 
         .card img {
             width: 100%;
-            height: auto;
-            max-width: 180px;
-            border-radius: 5px 0 0 5px;
+            height: 90%;
+            max-width: 240px;
+            border-radius: 5px;
+            margin-top: 5%;
         }
 
         .card-body {
@@ -127,16 +130,16 @@
 <body>
 
 <div class="container">
-    <h2>Search Results</h2>
-
+    <h2 class="wheading">Search Results</h2>
+    <div class="wcard">
     {% if get %}
         {% for product in get %}
-        <div class="card">
+        <div class="card mb-3">
             <div class="row g-0">
                 <div class="col-md-4">
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid rounded-start">
                 </div>
-                <div class="col-md-8"></div>
+                <div class="col-md-8">
                 <div class="card-body">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text">{{ product.description }}</p>
@@ -146,7 +149,11 @@
                 </div>
             </div>
         </div>
+    </div>
         {% endfor %}
+    
+</div>
+</div>
     {% else %}
         <p>No products found matching your search criteria.</p>
     {% endif %}
