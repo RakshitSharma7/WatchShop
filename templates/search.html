@@ -24,17 +24,7 @@
             padding: 20px;
         }
 
-        /* .card {
-            display: flex;
-            flex-direction: row;
-            background-color: #fff;
-            border: 2px solid;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            border-color: black;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 
-        } */
 
         
     .card {
@@ -46,11 +36,7 @@
       box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
     }
 
-    .wcard{
-      display: grid;
-      grid-template-columns: 50% 50%;
-      margin-left: 1px;
-    }
+    
 
         .card img {
             width: 100%;
@@ -115,7 +101,7 @@
         }
 
         /* Responsive Design */
-        @media (max-width: 768px) {
+        /* @media (max-width: 768px) {
             .card {
                 flex-direction: column;
             }
@@ -124,14 +110,14 @@
                 border-radius: 5px 5px 0 0;
                 max-width: 100%;
             }
-        }
+        } */
     </style>
 </head>
 <body>
 
 <div class="container">
     <h2 class="wheading">Search Results</h2>
-    <div class="wcard">
+    <div class="scard">
     {% if get %}
         {% for product in get %}
         <div class="card mb-3">
