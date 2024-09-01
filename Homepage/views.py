@@ -75,15 +75,17 @@ def login_page(request):
 
 
 def signup_page(request):
-    if request.method=="POST":
-        form=UserCreationForm(request.post)
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('login')
-    else:
-        form=UserCreationForm()
         
-    return render(request,'signup.html',{'form':form})
+    
+    else:
+        form = UserCreationForm()
+    return render(request, 'signup.html', {'form': form})
+
 
 
 def logout_page(request):
@@ -142,10 +144,12 @@ def remove_wish(request,id):
 
 
 def removecart(request,id):
-    products=watchupload.objects.get(id=id)
-    cart_obj=Cart.objects.get(user=request.user)
-    cart_obj.product.remove(products)
-    return render(request,'cart.html',{'product':cart_obj.product.all(),'iscart':True})
+    product_rm = watchupload.objects.get(id=id)
+    cart_user,created=Cart.objects.get_or_create(user=request.user)
+    cart_obj= cartItems.objects.get(user=cart_user)
+    cart_obj.product.remove(product_rm)
+    return render(request, 'cart.html', {'product': cart_obj.product.all()})
+
 
 
 
