@@ -2,13 +2,16 @@
 
 
 {%block body_block %}
+
 <div class="wrapper">
     <form method="post" enctype="multipart/form-data" class="forms">
+    <h5 class="wheading">Sign Up</h5>
+
         {% csrf_token %}
-        <div class="form-grp">{{form.username.label_tag}}{{form.username}}</div>
-        <div class="form-grp">{{form.password1.label_tag}}{{form.password1}}</div>
+        <div class="form-grp">{{form.username.label_tag}}<br>{{form.username}}</div>
+        <div class="form-grp">{{form.password1.label_tag}}<br>{{form.password1}}</div>
         <div class="form-grp">{{form.password2.label_tag}}{{form.password2}}</div>
-        <button type="submit" class="btn btn-forms btn-info" >SignUp</button>
+        <button type="submit" class="btn btn-forms btn-info" style="margin-left: 35%;">SignUp</button>
     </form>
 </div>
 

@@ -147,14 +147,19 @@ def remove_wish(request,id):
     return render(request, 'wishlist.html',{'product':wishlist_obj.products.all(),'iscart':False})
 
 
-def removecart(request,id):
+# def removecart(request,id):
+#     product_rm = watchupload.objects.get(id=id)
+#     cart_user,created=Cart.objects.get_or_create(user=request.user)
+#     cart_obj= cartItems.objects.filter(user=cart_user,product=product_rm)
+#     cart_obj.product.remove(product_rm)
+#     return render(request, 'cart.html', {'product': cart_obj.product.all()})
+
+def removecart(request, id):
     product_rm = watchupload.objects.get(id=id)
-    cart_user,created=Cart.objects.get_or_create(user=request.user)
-    cart_obj= cartItems.objects.get(user=cart_user)
-    cart_obj.product.remove(product_rm)
-    return render(request, 'cart.html', {'product': cart_obj.product.all()})
-
-
+    cart_user = Cart.objects.get(user=request.user)
+    cart_item = cartItems.objects.get(user=cart_user, product=product_rm)
+    cart_item.delete()
+    return redirect('show_cart')
 
 
 def contact(request):

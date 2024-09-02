@@ -5,6 +5,7 @@
 
 <div class="wrapper">
     <form method="post" class="forms">
+        <h5 class="wheading">Login</h5>
         {% csrf_token %}
         <div class="form-grp">{{form.username.label_tag}}{{form.username}}</div>
         <div class="form-grp">{{form.password.label_tag}}{{form.password}}</div>
