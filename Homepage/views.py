@@ -73,17 +73,21 @@ def login_page(request):
         form=AuthenticationForm()
     return render(request,'login_page.html',{'form':form})
 
+from django.contrib import messages
 
 def signup_page(request):
+    if request.user.is_authenticated:
+        return redirect('home')  # Redirect if the user is already logged in
+
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Your account has been created! You can now log in.')
             return redirect('login')
-        
-    
     else:
         form = UserCreationForm()
+
     return render(request, 'signup.html', {'form': form})
 
 
