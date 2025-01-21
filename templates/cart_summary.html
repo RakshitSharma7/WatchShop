@@ -1,0 +1,105 @@
+{% extends 'main.html' %}
+<style>
+    .price-details {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 16px;
+        max-width: 300px;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9;
+    }
+
+    .price-details h3 {
+        margin: 0;
+        margin-bottom: 16px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .price-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .price-row span {
+        display: inline-block;
+    }
+
+    .discount {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .free {
+        color: #28a745;
+        font-weight: bold;
+    }
+
+    .total-amount {
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 16px;
+    }
+
+    .total-amount span:last-child {
+        color: #000;
+    }
+
+    .savings {
+        margin-top: 8px;
+        color: #28a745;
+        font-size: 14px;
+        font-weight: bold;
+    }
+</style>
+
+{%block body_block %}
+
+    <h2 class="wheading">Cart Summary</h2>
+    {% if cart_details %}
+        <table style="margin-top: 40px;">
+            <thead>
+                <tr>
+                    
+                    <th style="padding-left: 170px;">Product</th>
+                    <th style="padding-left: 200px;">Price</th>
+                    <th style="padding-left: 200px;">Quantity</th>
+                    <th style="padding-left: 200px;">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_details %}
+                <tr style="border-width: 20px; border-color: white;">
+                    <td style="padding-left: 100px;"><img src="{{item.image.url}}" alt="" style="height: 100px; width: 200px;">{{ item.product_name }}</td>
+                    <td style="padding-left: 200px;">${{ item.price }}</td>
+                    <td style="padding-left: 200px;">{{ item.quantity }}</td>
+                    <td style="padding-left: 200px;">${{ item.subtotal }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!-- <p>Total Items: {{ total_count }}</p>
+        <p>Total Amount: {{ total_price }}</p> -->
+        <div class="price-details; margin-bottom: 20%;">
+            <h5 style="margin-left: 46%;">PRICE DETAILS</h5>
+            </div>
+            
+            <hr>
+            <div class="price-row" style="padding-bottom: 5px; margin-left: 44.5%;">
+                <span>Delivery Charges</span>
+                <span><s>₹40</s> <span class="free">Free</span></span>
+            </div>
+            <div class="price-row total-amount" style="margin-left: 44.5%;">
+                <span >Total Amount:</span><span style="padding-left: 10px;"> ₹{{ total_price }}</span>
+            </div>
+            <!-- <p class="savings">You will save ₹1,591 on this order</p> -->
+        </div>
+        <a type="button" class="btn btn-outline-primary" style="margin-left: 48%; padding: 5px;margin-top: 10px; margin-bottom: 15%;" href="{% url 'process_payment' %}">CheckOut</a>
+    {% else %}
+        <p>Your cart is empty.</p>
+    {% endif %}
+
+
+{%endblock %}

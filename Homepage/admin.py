@@ -1,10 +1,10 @@
 from django.contrib import admin
-from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews,cartItems,contact
+from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews,cartItems,contact,Profile
 # Register your models here.
 
 
 admin.site.register(WatcheDB)
-
+admin.site.register(Profile)
 
 class watchmodeladmin(admin.ModelAdmin):
     list_display=('name','description','price','image')

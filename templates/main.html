@@ -473,7 +473,15 @@
   font-size: xx-large;
   margin: 20px;
 }
+/* 
+.emptycart{
+  font-family: "Moderustic", sans-serif;
+  font-weight: 400;
+  text-align: center;
+  font-size: xx-large;
+  margin: 90px;
 
+} */
 
 
   </style>
@@ -493,13 +501,16 @@
             <a class="nav-link {%block statush %}{%endblock%}" aria-current="page" href="{% url 'home' %}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link {%block statusu %}{%endblock%}" aria-current="page" href="{% url 'upload' %}">Upload</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link {%block statusw %}{%endblock%}" aria-current="page" href="{% url 'show_wishlist' %}">WishList</a>
           </li>
           <li class="nav-item">
             <a class="nav-link {%block statusc %}{%endblock%}"aria-current="page"   href="{% url 'show_cart' %}">Cart</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {%block statusa %}{%endblock%}" aria-current="page" href="{% url 'about' %}">About</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {%block statuscc %}{%endblock%}" aria-current="page" href="{% url 'contact' %}">Contact</a>
           </li>
           <!-- <li class="nav-item">
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
@@ -516,9 +527,7 @@
             {%else%}
             <li><a class="dropdown-item " href="{% url 'login' %}"><i class="bi bi-person-circle"></i> Guest</a></li>
             {% endif %}
-            
-            <li><a class="dropdown-item" href="{% url 'about' %}">About Us</a></li>
-            <li><a class="dropdown-item" href="{% url 'contact' %}">Contact Us</a></li>
+
 
             {% if user.is_authenticated %}
             <li><li><a class="dropdown-item" href="{% url 'logout' %}">LogOut</a></li></li>

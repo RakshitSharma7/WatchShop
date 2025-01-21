@@ -3,9 +3,8 @@ from django.http import HttpResponse
 from . models import WatcheDB,watchupload,wishlist,Cart,Watchreviews,cartItems
 from  . forms import uploadforms,contactform
 from django.contrib.auth.decorators import login_required
-
-# Create your views here.
-
+from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
+from django.contrib.auth import authenticate,login,logout
 
 
 
@@ -27,13 +26,11 @@ def Home(request):
 #     return render(request, "upload.html", {'form': form})
 
 
-
 #class-based view
 from django.views import View
 from django.utils.decorators import method_decorator
 
 class uploadPage(View):
-
     @method_decorator(login_required(login_url='login'))
     def get(self,request):
         form = uploadforms()
@@ -47,14 +44,9 @@ class uploadPage(View):
         return render(request, "upload.html", {'form': form})
 
 
-
-
-
 def about(request):
     return render(request,'about.html')
 
-from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
-from django.contrib.auth import authenticate,login,logout
 
 def login_page(request):
     if request.method=="POST":
@@ -91,10 +83,10 @@ def signup_page(request):
     return render(request, 'signup.html', {'form': form})
 
 
-
 def logout_page(request):
     logout(request)
     return redirect('home')
+
 
 from django.shortcuts import get_object_or_404
 def show_product(request,id):
@@ -102,6 +94,7 @@ def show_product(request,id):
     review_obj=Watchreviews.objects.filter(products=product)
     return render(request,'product.html',{'product':product,'reviews':review_obj})
 
+# WISHLIST
 
 def addtowish(request,id):
     if request.user.is_authenticated:
@@ -115,18 +108,6 @@ def addtowish(request,id):
     else:
         return redirect('login')
 
-def addtocart(request,id):
-    #check if user has cart or not
-    user_cart, created = Cart.objects.get_or_create(user=request.user)
-    
-    #fetch the product with given id
-    product= watchupload.objects.get(id=id)
-
-    #create a cart item using product abd user
-    cart_item, created = cartItems.objects.get_or_create(user= user_cart, product=product)
-    cart_item.product=product
-    cart_item.save()
-    return redirect('home')
 
 @login_required(login_url='login')
 def show_wishlist(request):
@@ -134,11 +115,6 @@ def show_wishlist(request):
     wishlist_obj=wishlist.objects.get(user=user)
     return render(request, 'wishlist.html',{'product':wishlist_obj.products.all(),'iscart':False})
 
-@login_required(login_url='login')
-def show_cart(request):
-    user_cart, created = Cart.objects.get_or_create(user=request.user)
-    cart_objects = user_cart.cartitems_set.all()
-    return render(request, 'cart.html', {'product': cart_objects})
 
 def remove_wish(request,id):
     product=watchupload.objects.get(id=id)
@@ -147,10 +123,29 @@ def remove_wish(request,id):
     return render(request, 'wishlist.html',{'product':wishlist_obj.products.all(),'iscart':False})
 
 
+# CARTITEMS
+
+def addtocart(request,id):
+    #check if user has cart or not
+    user_cart, created = Cart.objects.get_or_create(user=request.user)
+    #fetch the product with given id
+    products= watchupload.objects.get(id=id)
+    #create a cart item using product abd user
+    cart_items, created = cartItems.objects.get_or_create(user= user_cart, product=products)
+    cart_items.product=products
+    cart_items.save()
+    return redirect('home')
+
+@login_required(login_url='login')
+def show_cart(request):
+    user_cart, created = Cart.objects.get_or_create(user=request.user)
+    cart_objects = user_cart.cartitems_set.all()
+    return render(request, 'cart.html', {'product': cart_objects})
+
 # def removecart(request,id):
 #     product_rm = watchupload.objects.get(id=id)
-#     cart_user,created=Cart.objects.get_or_create(user=request.user)
-#     cart_obj= cartItems.objects.filter(user=cart_user,product=product_rm)
+#     cart_user,created=cartItems.objects.get(user=request.user)
+#     cart_obj= Cart.objects.filter(user=cart_user,product=product_rm)
 #     cart_obj.product.remove(product_rm)
 #     return render(request, 'cart.html', {'product': cart_obj.product.all()})
 
@@ -167,7 +162,6 @@ def contact(request):
 
 
 class contactus(View):
-
     @method_decorator(login_required(login_url='login'))
     def get(self,request):
         form = contactform()
@@ -179,7 +173,8 @@ class contactus(View):
             form.save()
             return redirect('home')
         return render(request, "contact.html", {'form': form})
-    
+
+
 class SearchView(View):
     model = watchupload
     template_name = 'search.html'
@@ -191,3 +186,95 @@ class SearchView(View):
         else:
             results = watchupload.objects.none()
         return render(request, self.template_name, {'get': results})
+
+
+
+
+
+@login_required
+def cart_summary(request):
+    try:
+        cart = Cart.objects.get(user=request.user)
+        items = cartItems.objects.filter(user=cart)
+
+        # Prepare items with subtotal calculated
+        cart_details = []
+        for item in items:
+            subtotal = item.cart_count * item.product.price
+            cart_details.append({
+                "image":item.product.image,
+                "product_name": item.product.name,
+                "price": item.product.price,
+                "quantity": item.cart_count,
+                "subtotal": subtotal,
+            })
+
+        # Calculate total count and total price
+        total_count = sum(item["quantity"] for item in cart_details)
+        total_price = sum(item["subtotal"] for item in cart_details)
+
+        context = {
+            "cart_details": cart_details,
+            "total_count": total_count,
+            "total_price": total_price,
+        }
+        return render(request, "cart_summary.html", context)
+    except Cart.DoesNotExist:
+        return render(request, "cart_summary.html", {"cart_details": [], "total_count": 0, "total_price": 0})
+
+
+def process_payment(request):
+    try:
+        cart = Cart.objects.get(user=request.user)
+        items = cartItems.objects.filter(user=cart)
+
+        # Prepare items with subtotal calculated
+        cart_details = []
+        for item in items:
+            subtotal = item.cart_count * item.product.price
+            cart_details.append({
+                "image":item.product.image,
+                "product_name": item.product.name,
+                "price": item.product.price,
+                "quantity": item.cart_count,
+                "subtotal": subtotal,
+            })
+
+        # Calculate total count and total price
+        total_count = sum(item["quantity"] for item in cart_details)
+        total_price = sum(item["subtotal"] for item in cart_details)
+        final_price=total_price*0.9
+
+        context = {
+            "cart_details": cart_details,
+            "total_count": total_count,
+            "total_price": total_price,
+            "final_price":final_price
+        }
+        return render(request, "payment.html", context)
+    except Cart.DoesNotExist:
+        return render(request,'payment.html')
+
+from .forms import UserForm, ProfileForm
+
+@login_required
+def profile_view(request):
+    user_form = UserForm(instance=request.user)
+    profile_form = ProfileForm(instance=request.user.profile if hasattr(request.user, 'profile') else None)
+
+    if request.method == 'POST':
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.profile if hasattr(request.user, 'profile') else None)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile = profile_form.save(commit=False)
+            profile.user = request.user
+            profile.save()
+            return redirect('profile')
+
+    context = {
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+    return render(request, 'profile.html', context)

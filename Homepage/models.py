@@ -16,8 +16,9 @@ class watchupload(models.Model):
     name=models.CharField(max_length=100)
     description = models.TextField()
     price= models.FloatField()
-
+    count=models.IntegerField(default=1)
     image = models.ImageField(upload_to='watch_images/')
+
     created=models.DateTimeField(auto_now_add=True),
     updated=models.DateTimeField(auto_now=True)
 
@@ -25,6 +26,7 @@ class watchupload(models.Model):
 class wishlist(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE)
     products=models.ManyToManyField(watchupload)
+
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
 
@@ -56,3 +58,13 @@ class contact(models.Model):
 
     created=models.DateTimeField(auto_now_add=True)
     updated=models.DateTimeField(auto_now=True)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    address = models.TextField(blank=True, null=True)
+    profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username

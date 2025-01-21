@@ -21,7 +21,11 @@ urlpatterns = [
     path('removewish/<int:id>',views.remove_wish,name='removewish'),
     path('removecart/<int:id>',views.removecart,name='removecart'),
     path('contact/',contactus.as_view(),name='contact'),
-    path('search/',SearchView.as_view(),name='search')
+    path('search/',SearchView.as_view(),name='search'),
+    path("cart_summary/",views.cart_summary, name="cart_summary"),
+    path('process_payment/', views.process_payment, name='process_payment'),
+    path('profile/', views.profile_view, name='profile'),
+
 ]
 
 
